@@ -78,20 +78,6 @@ SteamCMD is fetched automatically from Valve on first run — nothing extra to i
 
 ---
 
-## Building it yourself
-
-You don't need Visual Studio or the .NET SDK — it builds with the C# compiler already included
-in Windows.
-
-1. Clone or download this repo.
-2. Double-click **`build.bat`**.
-3. It produces **`ModlistRescue.exe`** in the same folder.
-
-(GitHub Actions does the same thing in the cloud for every release — see
-[`.github/workflows/release.yml`](.github/workflows/release.yml).)
-
----
-
 ## Credits & Disclaimer
 
 Heads up: this is just a fan-made tool, not official and nothing to do with Valve, Bethesda or
