@@ -1,0 +1,46 @@
+name: Build and Release
+
+# Builds ModlistRescue.exe on a Windows runner straight from the source in this repo.
+# - Push a tag like v1.0 to build AND publish a GitHub Release with the exe attached.
+# - Or run it manually (Actions tab > Build and Release > Run workflow) to just build and
+#   download the exe as an artifact, without making a release.
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Compile with the built-in .NET Framework compiler
+        shell: pwsh
+        run: |
+          $csc = "$env:WINDIR\Microsoft.NET\Framework64\v4.0.30319\csc.exe"
+          if (-not (Test-Path $csc)) { $csc = "$env:WINDIR\Microsoft.NET\Framework\v4.0.30319\csc.exe" }
+          Write-Host "Using compiler: $csc"
+          & $csc /nologo /target:exe /optimize+ /out:ModlistRescue.exe /win32icon:techforge.ico /codepage:65001 `
+            /r:System.dll /r:System.Core.dll /r:System.IO.Compression.dll /r:System.IO.Compression.FileSystem.dll `
+            ModlistRescue.cs
+          if ($LASTEXITCODE -ne 0) { throw "Build failed" }
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ModlistRescue
+          path: ModlistRescue.exe
+
+      - name: Publish release (only when a tag is pushed)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ModlistRescue.exe
+          generate_release_notes: true

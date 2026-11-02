@@ -1,0 +1,8 @@
+# Build output - the exe is produced by build.bat or GitHub Actions, not committed
+*.exe
+
+# SteamCMD is downloaded at runtime next to the exe
+steamcmd/
+
+# Logs written into the Skyrim folder (and any stray local copies)
+*.log
